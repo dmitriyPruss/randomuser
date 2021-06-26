@@ -6,16 +6,41 @@ const options = {
   page: 1,
 };
 
-fetch(
-  `https://randomuser.me/api/?results=${options.results}&seed=${options.seed}&page=${options.page}`
-)
-  .then(response => response.json())
-  .then(({ results }) => renderUsers(results));
+loadUsers(options);
+
+const [btnPrev, btnNext] = document.querySelectorAll('button');
+btnPrev.addEventListener('click', btnPrevHandler);
+btnNext.addEventListener('click', btnNextHandler);
+
+function btnPrevHandler(e) {
+  // Написать обработчик
+}
+
+function btnNextHandler(e) {
+  options.page++;
+  loadUsers(options);
+}
+
+function loadUsers({ results, seed, page }) {
+  fetch(
+    `https://randomuser.me/api/?results=${results}&seed=${seed}&page=${page}`
+  )
+    .then(response => response.json())
+    .then(({ results }) => renderUsers(results));
+}
 
 function renderUsers(users) {
+  const userList = document.querySelector('.userList');
+  if (userList) {
+    userList.remove();
+  }
+
+  const newUserList = document.createElement('ul');
+  newUserList.classList.add('userList');
+  document.getElementById('root').prepend(newUserList);
+
   const liUserCollection = users.map(user => createUserListItem(user));
-  const userList = document.getElementById('userList');
-  userList.append(...liUserCollection);
+  newUserList.append(...liUserCollection);
 }
 
 function createUserListItem({
@@ -26,7 +51,7 @@ function createUserListItem({
   userListItem.classList.add('userListItem');
 
   userListItem.append(createUserImage(userImageSrc));
-  userListItem.append(createUserFullName());
+  userListItem.append(createUserFullName(firstName, lastName));
 
   return userListItem;
 }
@@ -37,5 +62,10 @@ function createUserImage(userImageSrc) {
   img.alt = 'user profile image';
   return img;
 }
-// Написать createUserFullName
-function createUserFullName() {}
+
+function createUserFullName(firstName, lastName) {
+  const div = document.createElement('div');
+  div.classList.add('userFullName');
+  div.innerText = `${firstName} ${lastName}`;
+  return div;
+}
