@@ -13,7 +13,10 @@ btnPrev.addEventListener('click', btnPrevHandler);
 btnNext.addEventListener('click', btnNextHandler);
 
 function btnPrevHandler(e) {
-  // Написать обработчик
+  if (options.page >= 1) {
+    options.page--;
+    loadUsers(options);
+  }
 }
 
 function btnNextHandler(e) {
