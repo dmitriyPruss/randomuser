@@ -3,6 +3,7 @@
 }
 
 .userList {
+  margin-top: 25px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -14,6 +15,10 @@
   border: 2px solid red;
   border-radius: 5px;
   text-align: center;
+}
+
+.userListItem:hover{
+  cursor: pointer;
 }
 
 .userListItem > img {
@@ -31,4 +36,18 @@
 
 .buttonContainer > button {
   margin: 10px;
+}
+
+.clickedCard {
+  background: linear-gradient(black, maroon, red, rgb(190, 74, 74), white);
+  box-shadow: -3px -4px 1px black;
+}
+
+.namesString{
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 99;
+  color: yellow;
+  background-color: black;
 }
