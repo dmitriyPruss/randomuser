@@ -1,5 +1,12 @@
 'use strict';
 
+// - Добавить кнопку << , т.е. переход на первую страницу.
+// - Добавить информацию о юзере (возраст, имейл, ...).
+// - Цвет рамки (фона) карточкам генерить в зависимости от пола юзера.
+// - * Сдалать возможным выбирать несколько карточек, список полных имен 
+// выбранных юзеров приводить в строку сверху. Выбранные карточки подсвечивать.
+// - Застилить карточки.
+
 const options = {
   results: 10,
   seed: 'abc',
@@ -13,7 +20,6 @@ const [btnFirstPage, btnPrev, btnNext] = document.querySelectorAll('button');
 btnFirstPage.addEventListener('click', btnFirstPageHandler);
 btnPrev.addEventListener('click', btnPrevHandler);
 btnNext.addEventListener('click', btnNextHandler);
-
 
 
 function btnPrevHandler(e) {
@@ -39,16 +45,16 @@ function loadUsers({ results, seed, page }) {
   )
     .then(response => response.json())
     .then(({ results }) => {
-      console.log('results :>> ', results);
       renderUsers(results);
-    }).then( results => toggleCards() );
-}
+    })
+    .then( () => toggleCards() );
+};
 
 function renderUsers(users) {
   const userList = document.querySelector('.userList');
   if (userList) {
     userList.remove();
-  }
+  };
 
   const newUserList = document.createElement('ul');
   newUserList.classList.add('userList');
@@ -56,7 +62,7 @@ function renderUsers(users) {
 
   const liUserCollection = users.map(user => createUserListItem(user));
   newUserList.append(...liUserCollection);
-}
+};
 
 function createUserListItem({
   name: { first: firstName, last: lastName },
@@ -69,8 +75,8 @@ function createUserListItem({
   const userListItem = document.createElement('li');
   userListItem.classList.add('userListItem');
 
-  gender === 'female' ? userListItem.style.borderColor = 'blue' 
-  : userListItem.style.borderColor = 'red ';
+  gender === 'female' ? userListItem.style.borderColor = 'black' 
+  : userListItem.style.borderColor = 'grey';
 
   userListItem.append(createUserImage(userImageSrc));
   userListItem.append(createUserFullName(firstName, lastName));
@@ -87,24 +93,26 @@ function createUserImage(userImageSrc) {
 }
 
 function createUserFullName(firstName, lastName) {
-  const div = document.createElement('div');
-  div.classList.add('userFullName');
-  div.textContent = `${firstName} ${lastName}`;
-  return div;
+  const h2 = document.createElement('h2');
+  h2.classList.add('userFullName');
+  h2.textContent = `${firstName} ${lastName}`;
+  return h2;
 }
 
 function createOtherUserInfo(mail, age, country, city, streetName, streetNumber) {
   const div = document.createElement('div');
   
-  div.textContent = `e-mail: ${mail}, age: ${age}, 
-  country: ${country}, city: ${city}, street: ${streetName}, ${streetNumber}`;
+  div.innerHTML = `
+    <p>e-mail: ${mail}</p> 
+    <p>Age: ${age}</p> 
+    <p>Country: ${country}</p>
+    <p>City: ${city}</p> 
+    <p>Street: ${streetName}, ${streetNumber}</p>`;
+
   return div;
 }
 
-
-
 function toggleCards() {
-
   const root = document.getElementById('root');
   const lis = root.querySelector('.userList').querySelectorAll('li');
 
@@ -114,29 +122,27 @@ function toggleCards() {
 
   const names = new Set();
 
-
   lis.forEach(li => {
-    li.addEventListener('click', e => takeCard(li, namesString));
+    li.addEventListener('click', e => takeCard(li, namesString, names));
   });
-
-  function takeCard(elem, container) {
-
-    const fullName = elem.querySelector('.userFullName').textContent;
-    container.textContent = '';
-
-    elem.classList.toggle('clickedCard');
-
-    elem.classList.contains('clickedCard') ? names.add(fullName) : names.delete(fullName);
-    
-    for(const name of names) {
-      container.textContent === '' 
-      ? container.textContent += name 
-      : container.textContent += `, ${name}`; 
-    };
-  };
 }
 
+function takeCard(elem, container, list) {
 
+  const fullName = elem.querySelector('.userFullName').textContent;
+  container.textContent = '';
+
+  elem.classList.toggle('clickedCard');
+  elem.classList.contains('clickedCard') ? list.add(fullName) : list.delete(fullName);
+
+  list.size !== 0 ? container.style.padding = '5px' : container.style.padding = '';
+  
+  for(const item of list) {
+    container.textContent === '' 
+    ? (container.textContent += item)
+    : container.textContent += `, ${item}`; 
+  };
+};
 
 
 
