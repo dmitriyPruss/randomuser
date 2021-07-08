@@ -23,6 +23,10 @@ btnNext.addEventListener('click', btnNextHandler);
 
 
 function btnPrevHandler(e) {
+  if( document.querySelector('.namesString') ) {
+    document.querySelector('.namesString').remove();
+  }; 
+
   if (options.page > 1) {
     options.page--;
     loadUsers(options);
@@ -30,11 +34,19 @@ function btnPrevHandler(e) {
 };
 
 function btnNextHandler(e) {
+  if( document.querySelector('.namesString') ) {
+    document.querySelector('.namesString').remove();
+  }; 
+
   options.page++;
   loadUsers(options);
 };
 
 function btnFirstPageHandler(e) {
+  if( document.querySelector('.namesString') ) {
+    document.querySelector('.namesString').remove();
+  }; 
+  
   options.page = 1;
   loadUsers(options);
 };
@@ -118,7 +130,7 @@ function toggleCards() {
 
   const namesString = document.createElement('div');
   namesString.classList.add('namesString');
-  root.querySelector('.userList').append(namesString);
+  root.append(namesString);
 
   const names = new Set();
 
